@@ -1,5 +1,16 @@
 package de.tum.iot.locationbasedtrigger;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.RemoteException;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +23,10 @@ import org.altbeacon.beacon.Identifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
+import java.text.DateFormat;
+import java.util.Collection;
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     //Used for Logging
     protected static final String TAG = "MonitoringActivity";
@@ -20,6 +35,12 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     private BeaconManager beaconManager;
     private Region region;
 
+    //Used to provide Notifications
+    private NotificationManagerCompat notificationManager;
+    private String notificationChannelId = "0";
+    private int lastNotificationId;
+    private long lastNotificationTime;
+    private DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.MEDIUM);
 
     //Used for Location Permission Requeste
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
@@ -37,6 +58,12 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         //Get Permissions & Checks
         verifyBluetooth();
         requestLocationPermission();
+
+        createNotificationChannel(); //Create Channel an Android 8+ to use for notifications
+        notificationManager = NotificationManagerCompat.from(this);
+        lastNotificationId = 0;
+        lastNotificationTime = 0;
+
         beaconManager = BeaconManager.getInstanceForApplication(this);
 
         //AltBeacon usually only detects AltBeacons. In order to detect Eddystone & iBeacons
@@ -85,6 +112,15 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                 for (Beacon b:beacons
                      ) {
                     Log.i(TAG, "The first beacon " + b.toString() + " is about " + b.getDistance() + " meters away.");
+
+                    if(b.getDistance() < triggerDistance &&
+                            lastNotificationTime + triggerInterval <= System.currentTimeMillis()){
+                        lastNotificationTime = System.currentTimeMillis();
+                        replaceNotification("Trigger",
+                                "trigger was activated at "+dateFormat.format(new Date(lastNotificationTime))+
+                                        " at "+String.format("%.2f", b.getDistance())+"m");
+                        Log.i(TAG, "trigger was activated at "+dateFormat.format(new Date(lastNotificationTime))+
+                                " at "+String.format("%.2f", b.getDistance())+"m");
                     }
                 }
             }
@@ -145,6 +181,40 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                 return;
             }
         }
+    }
+
+    //Taken from https://developer.android.com/training/notify-user/build-notification#builder
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(notificationChannelId, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    public void publishNotification(String title, String content){
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, notificationChannelId)
+                .setSmallIcon(R.drawable.near_me)
+                .setContentTitle(title)
+                .setContentText(content)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        // Add as notification
+        notificationManager.notify(++lastNotificationId, mBuilder.build());
+    }
+
+    public void replaceNotification(String title, String content){
+        notificationManager.cancel(lastNotificationId);
+
+        publishNotification(title, content);
     }
     }
     //Taken from https://github.com/AltBeacon/android-beacon-library-reference/blob/master/app/src/main/java/org/altbeacon/beaconreference/MonitoringActivity.java
