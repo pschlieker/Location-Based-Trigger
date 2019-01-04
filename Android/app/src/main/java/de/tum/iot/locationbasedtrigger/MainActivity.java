@@ -2,16 +2,100 @@ package de.tum.iot.locationbasedtrigger;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
-public class MainActivity extends AppCompatActivity {
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.BeaconConsumer;
+import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.BeaconParser;
+import org.altbeacon.beacon.Identifier;
+import org.altbeacon.beacon.RangeNotifier;
+import org.altbeacon.beacon.Region;
+
+public class MainActivity extends AppCompatActivity implements BeaconConsumer {
+    //Used for Logging
+    protected static final String TAG = "MonitoringActivity";
+
+    //Used by AltBeacon
+    private BeaconManager beaconManager;
+    private Region region;
+
+
+    //Used for Location Permission Requeste
+    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
+
+    //Setting for trigger Frequency
+    private double triggerDistance = .4;//Distance in meters when to trigger
+    private long triggerInterval = 10 * 1000; //Interval in milliseconds
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         //Get Permissions & Checks
         verifyBluetooth();
         requestLocationPermission();
+        beaconManager = BeaconManager.getInstanceForApplication(this);
+
+        //AltBeacon usually only detects AltBeacons. In order to detect Eddystone & iBeacons
+        //they need to be added to the parser
+        beaconManager.getBeaconParsers().clear();
+        beaconManager.getBeaconParsers().add(new BeaconParser().
+                setBeaconLayout(BeaconParser.EDDYSTONE_UID_LAYOUT)); //Eddystone, e.g. RaspberryPi
+        beaconManager.getBeaconParsers().add(new BeaconParser().
+                setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24")); //iBeacon, e.g. of university
+
+        //Setup RaspberryPi Beacon
+        String raspiNamespaceId = "0x0eaea79793961d290fa4";
+        String raspiInstanceId = "0x3dfe4b5e89b9";
+        region = new Region("raspberrypi",
+                Identifier.parse(raspiNamespaceId),
+                Identifier.parse(raspiInstanceId),
+                null);
+
+        beaconManager.bind(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        beaconManager.unbind(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        beaconManager.unbind(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        beaconManager.bind(this);
+    }
+
+    @Override
+    public void onBeaconServiceConnect() {
+
+        RangeNotifier rangeNotifier = new RangeNotifier() {
+            @Override
+            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+                for (Beacon b:beacons
+                     ) {
+                    Log.i(TAG, "The first beacon " + b.toString() + " is about " + b.getDistance() + " meters away.");
+                    }
+                }
+            }
+
+        };
+        try {
+            beaconManager.startRangingBeaconsInRegion(region);
+            beaconManager.addRangeNotifier(rangeNotifier);
+        } catch (RemoteException e) {   }
+    }
+
     //Taken from https://github.com/AltBeacon/android-beacon-library-reference/blob/master/app/src/main/java/org/altbeacon/beaconreference/MonitoringActivity.java
     public void requestLocationPermission(){
         //Request Location Permission
