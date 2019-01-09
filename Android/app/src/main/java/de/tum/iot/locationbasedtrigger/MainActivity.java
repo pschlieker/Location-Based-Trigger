@@ -14,6 +14,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
@@ -41,6 +42,9 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     private int lastNotificationId;
     private long lastNotificationTime;
     private DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.MEDIUM);
+
+    //Used to update Current Distance GUI
+    private String currentDistance = "-";
 
     //Used for Location Permission Requeste
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
@@ -112,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                 for (Beacon b:beacons
                      ) {
                     Log.i(TAG, "The first beacon " + b.toString() + " is about " + b.getDistance() + " meters away.");
+                    updateCurrentDistanceGUI(b.getDistance());
 
                     if(b.getDistance() < triggerDistance &&
                             lastNotificationTime + triggerInterval <= System.currentTimeMillis()){
@@ -130,6 +135,18 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
             beaconManager.startRangingBeaconsInRegion(region);
             beaconManager.addRangeNotifier(rangeNotifier);
         } catch (RemoteException e) {   }
+    }
+
+    public void updateCurrentDistanceGUI(double d){
+        currentDistance = String.format("%.2f", d)+" m";
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ((TextView) findViewById(R.id.distance)).setText(currentDistance);
+            }
+        });
+
     }
 
     //Taken from https://github.com/AltBeacon/android-beacon-library-reference/blob/master/app/src/main/java/org/altbeacon/beaconreference/MonitoringActivity.java
