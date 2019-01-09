@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
         publishNotification(title, content);
     }
-    }
+
     //Taken from https://github.com/AltBeacon/android-beacon-library-reference/blob/master/app/src/main/java/org/altbeacon/beaconreference/MonitoringActivity.java
     private void verifyBluetooth() {
 
