@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.RemoteException;
+import android.preference.TwoStatePreference;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -55,6 +56,9 @@ public class MainActivity extends AppCompatActivity{
         verifyBluetooth();
         requestLocationPermission();
 
+        //Update Button to Switch Background Scanning
+        updateUIIsBackgroundScanning();
+
         //Start Updating the UI
         lastDistance = findViewById(R.id.distance);
         uiUpdateThread = new Thread() {
@@ -78,8 +82,21 @@ public class MainActivity extends AppCompatActivity{
         };
 
         uiUpdateThread.start();
+
+        lt.startScanning();
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+        lt.startScanning();
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        lt.stopScanning();
+    }
 
     /**
      * Get Last registered Distance to Beacon formated as String
@@ -190,5 +207,34 @@ public class MainActivity extends AppCompatActivity{
 
         }
 
+    }
+
+    /**
+     * Switches the background Scanning and off
+     * @param view
+     */
+    public void switchBackgroudScanning(View view){
+        lt.switchBackgroundScanning();
+        updateUIIsBackgroundScanning();
+    }
+
+    /**
+     * Returns whether the background Scanning is enabled
+     * @return
+     */
+    public boolean isBackgroundScanning(){
+        return lt.isBackgroundScanning;
+    }
+
+    /**
+     * Updates the UI depending on whether the background scanner is enabled or disabled
+     */
+    public void updateUIIsBackgroundScanning(){
+        TextView bt = findViewById(R.id.switchBackgroundScanning);
+        if(isBackgroundScanning()){
+            bt.setText(R.string.disable_background);
+        }else{
+            bt.setText(R.string.enable_background);
+        }
     }
 }

@@ -54,6 +54,9 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
     private double triggerDistance = .4;//Distance in meters when to trigger
     private long triggerInterval = 10 * 1000; //Interval in milliseconds
 
+    //Switch Background Scanning On/Off
+    public boolean isBackgroundScanning;
+    public boolean isScanning;
 
     @Override
     public void onCreate() {
@@ -78,23 +81,53 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
         //Enable Debugging of BeaconManager
         beaconManager.setDebug(true);
 
-        //Enable Background Scanning
-        createForegroundService();
+        //Enable PowerSaver
+        backgroundPowerSaver = new BackgroundPowerSaver(this);
+
+        //Update Status on Background Scanning
+        isBackgroundScanning = beaconManager.getForegroundServiceNotificationId() != -1;
+
+        Log.i(TAG, "App started up");
+    }
+
+    /**
+     * Switches the Background Scanning on or off. This has no effect on the current scanning
+     * until the app is stopped
+     */
+    public void switchBackgroundScanning(){
+        if(isBackgroundScanning){
+            disableBackgroundScanning();
+        }else{
+            enableBackgroundScanning();
+        }
+
+    }
+
+    /**
+     * Stops Monitoring for Beacons
+     */
+    public void stopScanning(){
+        if(!isBackgroundScanning){
+            stopRanging();
+            regionBootstrap.disable();
+            beaconManager.disableForegroundServiceScanning();
+            isScanning = false;
+        }
+    }
+
+    /**
+     * Starts Monitoring for Beacons
+     */
+    public void startScanning(){
+        if(isScanning){
+            return;
+        }
+        isScanning = true;
+
         beaconManager.setEnableScheduledScanJobs(false);
         beaconManager.setBackgroundBetweenScanPeriod(5000);
         beaconManager.setBackgroundScanPeriod(1100);
 
-        //Start Monitor
-        regionBootstrap = new RegionBootstrap(this, region);
-
-        //Enable PowerSaver
-        backgroundPowerSaver = new BackgroundPowerSaver(this);
-
-        Log.i(TAG, "App started up");
-
-    }
-
-    public void createForegroundService(){
         Notification.Builder builder = new Notification.Builder(this);
         builder.setSmallIcon(R.drawable.near_me);
         builder.setContentTitle("Scanning for Beacons");
@@ -113,6 +146,16 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
             builder.setChannelId(channel.getId());
         }
         beaconManager.enableForegroundServiceScanning(builder.build(), 456);
+
+        regionBootstrap = new RegionBootstrap(this, region);
+    }
+
+    public void disableBackgroundScanning(){
+        isBackgroundScanning = false;
+    }
+
+    public void enableBackgroundScanning(){
+        isBackgroundScanning = true;
     }
 
     /**
@@ -134,7 +177,6 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
             beaconManager.updateScanPeriods();
         } catch (RemoteException e) {  e.printStackTrace(); }
     }
-
 
     /**
      * Stops Ranging, only the detection of the presence of beacons will continue. Also increasing
