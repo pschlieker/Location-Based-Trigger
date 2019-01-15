@@ -35,10 +35,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity{
     //Used for Logging
     protected static final String TAG = "LocationTrigger";
+    private LocationTrigger lt;
 
-    //Used by AltBeacon
-    private BeaconManager beaconManager;
-    private Region region;
+    //Used to update UI
+    private TextView lastDistance;
+    private Thread uiUpdateThread;
 
     //Used for Location Permission Requeste
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
@@ -48,35 +49,44 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        lt = (LocationTrigger) getApplication();
+
         //Get Permissions & Checks
         verifyBluetooth();
         requestLocationPermission();
 
-        createNotificationChannel(); //Create Channel an Android 8+ to use for notifications
-        notificationManager = NotificationManagerCompat.from(this);
-        lastNotificationId = 0;
+        //Start Updating the UI
+        lastDistance = findViewById(R.id.distance);
+        uiUpdateThread = new Thread() {
 
             @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        beaconManager.unbind(this);
-    }
-
+            public void run() {
+                try {
+                    while (!uiUpdateThread.isInterrupted()) {
+                        uiUpdateThread.sleep(1000);
+                        runOnUiThread(new Runnable() {
                             @Override
-    protected void onPause() {
-        super.onPause();
+                            public void run() {
+                                lastDistance.setText(getLastDistance());
                             }
-
+                        });
                     }
-
-    @Override
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-
         };
+
+        uiUpdateThread.start();
     }
 
 
+    /**
+     * Get Last registered Distance to Beacon formated as String
+     * @return
+     */
+    public String getLastDistance(){
+        return (lt.currentDistance == -1 ? "-" : String.format("%.2f", lt.currentDistance) + "m");
     }
 
     /**
