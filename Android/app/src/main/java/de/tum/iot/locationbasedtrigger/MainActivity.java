@@ -3,153 +3,93 @@ package de.tum.iot.locationbasedtrigger;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.RemoteException;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
-
-import org.altbeacon.beacon.Beacon;
-import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
-import org.altbeacon.beacon.BeaconParser;
-import org.altbeacon.beacon.Identifier;
-import org.altbeacon.beacon.RangeNotifier;
-import org.altbeacon.beacon.Region;
 
-import java.text.DateFormat;
-import java.util.Collection;
-import java.util.Date;
-
-public class MainActivity extends AppCompatActivity implements BeaconConsumer {
+public class MainActivity extends AppCompatActivity{
     //Used for Logging
-    protected static final String TAG = "MonitoringActivity";
+    protected static final String TAG = "LocationTrigger";
+    private LocationTrigger lt;
 
-    //Used by AltBeacon
-    private BeaconManager beaconManager;
-    private Region region;
-
-    //Used to provide Notifications
-    private NotificationManagerCompat notificationManager;
-    private String notificationChannelId = "0";
-    private int lastNotificationId;
-    private long lastNotificationTime;
-    private DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-
-    //Used to update Current Distance GUI
-    private String currentDistance = "-";
+    //Used to update UI
+    private TextView lastDistance;
+    private Thread uiUpdateThread;
 
     //Used for Location Permission Requeste
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
-
-    //Setting for trigger Frequency
-    private double triggerDistance = .4;//Distance in meters when to trigger
-    private long triggerInterval = 10 * 1000; //Interval in milliseconds
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        lt = (LocationTrigger) getApplication();
+
         //Get Permissions & Checks
         verifyBluetooth();
         requestLocationPermission();
 
-        createNotificationChannel(); //Create Channel an Android 8+ to use for notifications
-        notificationManager = NotificationManagerCompat.from(this);
-        lastNotificationId = 0;
-        lastNotificationTime = 0;
+        //Update Button to Switch Background Scanning
+        updateUIIsBackgroundScanning();
 
-        beaconManager = BeaconManager.getInstanceForApplication(this);
+        //Start Updating the UI
+        lastDistance = findViewById(R.id.distance);
+        uiUpdateThread = new Thread() {
 
-        //AltBeacon usually only detects AltBeacons. In order to detect Eddystone & iBeacons
-        //they need to be added to the parser
-        beaconManager.getBeaconParsers().clear();
-        beaconManager.getBeaconParsers().add(new BeaconParser().
-                setBeaconLayout(BeaconParser.EDDYSTONE_UID_LAYOUT)); //Eddystone, e.g. RaspberryPi
-        beaconManager.getBeaconParsers().add(new BeaconParser().
-                setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24")); //iBeacon, e.g. of university
-
-        //Setup RaspberryPi Beacon
-        String raspiNamespaceId = "0x0eaea79793961d290fa4";
-        String raspiInstanceId = "0x3dfe4b5e89b9";
-        region = new Region("raspberrypi",
-                Identifier.parse(raspiNamespaceId),
-                Identifier.parse(raspiInstanceId),
-                null);
-
-        beaconManager.bind(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        beaconManager.unbind(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        beaconManager.unbind(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        beaconManager.bind(this);
-    }
-
-    @Override
-    public void onBeaconServiceConnect() {
-
-        RangeNotifier rangeNotifier = new RangeNotifier() {
-            @Override
-            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-                for (Beacon b:beacons
-                     ) {
-                    Log.i(TAG, "The first beacon " + b.toString() + " is about " + b.getDistance() + " meters away.");
-                    updateCurrentDistanceGUI(b.getDistance());
-
-                    if(b.getDistance() < triggerDistance &&
-                            lastNotificationTime + triggerInterval <= System.currentTimeMillis()){
-                        lastNotificationTime = System.currentTimeMillis();
-                        replaceNotification("Trigger",
-                                "trigger was activated at "+dateFormat.format(new Date(lastNotificationTime))+
-                                        " at "+String.format("%.2f", b.getDistance())+"m");
-                        Log.i(TAG, "trigger was activated at "+dateFormat.format(new Date(lastNotificationTime))+
-                                " at "+String.format("%.2f", b.getDistance())+"m");
-                    }
-                }
-            }
-
-        };
-        try {
-            beaconManager.startRangingBeaconsInRegion(region);
-            beaconManager.addRangeNotifier(rangeNotifier);
-        } catch (RemoteException e) {   }
-    }
-
-    public void updateCurrentDistanceGUI(double d){
-        currentDistance = String.format("%.2f", d)+" m";
-
-        runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ((TextView) findViewById(R.id.distance)).setText(currentDistance);
+                try {
+                    while (!uiUpdateThread.isInterrupted()) {
+                        uiUpdateThread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                lastDistance.setText(getLastDistance());
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        });
+        };
 
+        uiUpdateThread.start();
+
+        lt.startScanning();
     }
 
-    //Taken from https://github.com/AltBeacon/android-beacon-library-reference/blob/master/app/src/main/java/org/altbeacon/beaconreference/MonitoringActivity.java
+    @Override
+    protected void onResume(){
+        super.onResume();
+        lt.startScanning();
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        lt.stopScanning();
+    }
+
+    /**
+     * Get Last registered Distance to Beacon formated as String
+     * @return
+     */
+    public String getLastDistance(){
+        return (lt.currentDistance == -1 ? "-" : String.format("%.2f", lt.currentDistance) + "m");
+    }
+
+    /**
+     * Requests Location Permission from the user
+     * Taken from https://altbeacon.github.io/android-beacon-library/requesting_permission.html
+     */
     public void requestLocationPermission(){
         //Request Location Permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -174,6 +114,12 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         }
     }
 
+    /**
+     * Handles the return values after requesting the location permission
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -200,41 +146,11 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         }
     }
 
-    //Taken from https://developer.android.com/training/notify-user/build-notification#builder
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(notificationChannelId, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
-    public void publishNotification(String title, String content){
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, notificationChannelId)
-                .setSmallIcon(R.drawable.near_me)
-                .setContentTitle(title)
-                .setContentText(content)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        // Add as notification
-        notificationManager.notify(++lastNotificationId, mBuilder.build());
-    }
-
-    public void replaceNotification(String title, String content){
-        notificationManager.cancel(lastNotificationId);
-
-        publishNotification(title, content);
-    }
-
-    //Taken from https://github.com/AltBeacon/android-beacon-library-reference/blob/master/app/src/main/java/org/altbeacon/beaconreference/MonitoringActivity.java
+    /**
+     * Verifies that the given Device has bluetooth enabled, as well as BLE capabilities
+     * Taken from https://github.com/AltBeacon/android-beacon-library-reference/blob/master/app/src/
+     * main/java/org/altbeacon/beaconreference/MonitoringActivity.java
+     */
     private void verifyBluetooth() {
 
         try {
@@ -271,5 +187,34 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
         }
 
+    }
+
+    /**
+     * Switches the background Scanning and off
+     * @param view
+     */
+    public void switchBackgroudScanning(View view){
+        lt.switchBackgroundScanning();
+        updateUIIsBackgroundScanning();
+    }
+
+    /**
+     * Returns whether the background Scanning is enabled
+     * @return
+     */
+    public boolean isBackgroundScanning(){
+        return lt.isBackgroundScanning;
+    }
+
+    /**
+     * Updates the UI depending on whether the background scanner is enabled or disabled
+     */
+    public void updateUIIsBackgroundScanning(){
+        TextView bt = findViewById(R.id.switchBackgroundScanning);
+        if(isBackgroundScanning()){
+            bt.setText(R.string.disable_background);
+        }else{
+            bt.setText(R.string.enable_background);
+        }
     }
 }

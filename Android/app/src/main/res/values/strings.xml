@@ -3,6 +3,10 @@
     <string name="channel_name">Location Based Trigger</string>
     <string name="channel_description">Location Based Trigger</string>
     <string name="current_distance">Last Distance</string>
+    <string name="enable_background">Enable Background Scanning</string>
+    <string name="disable_background">Disable Background Scanning</string>
+
+
 
 
 </resources>
