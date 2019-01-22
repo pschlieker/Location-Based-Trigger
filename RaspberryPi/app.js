@@ -12,6 +12,10 @@ var users = require('./routes/users');
 var beacon = require('./beacon');
 beacon.startBeacon();
 
+//Setup for External URL
+var externalURL = require('./externalURL');
+
+
 
 var app = express();
 
@@ -48,4 +52,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+externalURL.createTunnel();
 module.exports = app;
