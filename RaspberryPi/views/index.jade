@@ -1,5 +1,22 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1= "Welcome to Location Based Trigger"
+  p Current status: #{status}
+  p The API provides the following options:
+  div
+    table.table.table-hover
+      thead
+        tr(style="text-align: left;")
+          th Endpoint
+          th Action
+      tbody
+        tr
+          td /trigger?timeout=
+          td Switch the device on and after the timeout (default 6000ms) off
+        tr
+          td /on
+          td Switches the device on
+        tr
+          td /off
+          td Switches the device off
