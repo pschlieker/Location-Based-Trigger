@@ -8,6 +8,11 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 
+//Setup Bluetooth Beacon
+var beacon = require('./beacon');
+beacon.startBeacon();
+
+
 var app = express();
 
 // view engine setup
