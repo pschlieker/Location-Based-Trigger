@@ -13,6 +13,13 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
@@ -58,6 +65,11 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
     public boolean isBackgroundScanning;
     public boolean isScanning;
 
+    //Queue for Executing API Calls
+    private RequestQueue queue;
+    public static String url = "https://iotlocationtrigger.localtunnel.me";
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -86,6 +98,9 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
 
         //Update Status on Background Scanning
         isBackgroundScanning = beaconManager.getForegroundServiceNotificationId() != -1;
+
+        //Setup Request Queue to be used for API calls
+        queue = Volley.newRequestQueue(this);
 
         Log.i(TAG, "App started up");
     }
@@ -334,6 +349,7 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
             if(b.getDistance() < triggerDistance &&
                     lastNotificationTime + triggerInterval <= System.currentTimeMillis()){
                 lastNotificationTime = System.currentTimeMillis();
+                makeAPICall("/trigger");
                 publishNotification("Trigger",
                         "trigger was activated at "+dateFormat.format(new Date(lastNotificationTime))+
                                 " at "+String.format("%.2f", b.getDistance())+"m");
@@ -341,5 +357,27 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
                         " at "+String.format("%.2f", b.getDistance())+"m");
             }
         }
+    }
+
+    /**
+     * Triggers the API at the static URL
+     * Explanation taken from: https://developer.android.com/training/volley/simple
+     */
+    public void makeAPICall(String endpoint){
+        // Request a string response from the provided URL.
+        StringRequest request = new StringRequest(Request.Method.GET, url+endpoint,
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.d(TAG, "API Trigger successful with response: "+response);
+                }
+            }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "API Trigger unsuccessful with errorresponse: "+error);
+            }
+        });
+
+        queue.add(request);
     }
 }
