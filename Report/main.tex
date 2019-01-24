@@ -115,16 +115,13 @@ This type of project can be used in numerous scenarios. A few of which are the f
 
 \section{Conceptual Approach \& Architecture}
 
+\noindent The used sensor is the Bluetooth sensor of an Android Smartphone. The Bluetooth Low Energy (BLE) Beacon is sending its signal constantly and periodically. The Smartphone (hold by a human) comes closer to the Beacon and detects the beacon. As soon as the beacon is detected by the smartphone (by the human), it sends (the human automatically sends) a HTTP request to our webserver to open the door/ to turn on the light. Our project architecture can be seen in figure \ref{fig:projectarchitecturefinal}.\\
 
-Our project architecture can be seen in figure \ref{fig:projectarchitecturefinal}. 
+\noindent We simulated the Beacon furthermore by a node.js application on PC. Thus, debugging and testing was faster and possible on every machine.\\
 
-The used sensor is the Bluetooth sensor of an Android Smartphone. The Bluetooth Low Energy (BLE) Beacon is sending its signal constantly and periodically. The Smartphone (hold by a human) comes closer to the Beacon and detects the beacon. As soon as the beacon is detected by the smartphone (by the human), it sends (the human automatically sends) a HTTP request to our webserver to open the door/ to turn on the light.\\
+\noindent The HTTP request arrives on the webserver (a Raspberry Pi). The Rasberry Pi handles the request by activating the lamp or opening a lock via its GPIO.\\
 
-We simulated the Beacon furthermore by a node.js application on PC. Thus, debugging and testing was faster and possible on every machine.\\
-
-The HTTP request arrives on the webserver (a Raspberry Pi). The Rasberry Pi handles the request by activating the lamp or opening a lock via its GPIO.\\
-
-The Raspberry can be reached over a public IP adress. We used Balena as deployment architecture for the Raspberry Pi. Balena \cite{balena} is a IoT cloud deployment platform where Balena images can be downloaded and flashed on the Raspberry. The image auto-pulls the code which the developer pushs on his git repository. On Balena, the Raspberry Pi gets a public IP adress. We installed Localtunnel \cite{localtunnel} on the Raspberry Pi to resolve the IP adress to a DNS name and have a nicer server name.
+\noindent The Raspberry can be reached over a public IP adress. We used Balena as deployment architecture for the Raspberry Pi. Balena \cite{balena} is a IoT cloud deployment platform where Balena images can be downloaded and flashed on the Raspberry. The image auto-pulls the code which the developer pushs on his git repository. On Balena, the Raspberry Pi gets a public IP adress. We installed Localtunnel \cite{localtunnel} on the Raspberry Pi to resolve the IP adress to a DNS name and have a nicer server name. There is no need of port forwarding.
  
  
 \begin{figure}[h]
@@ -194,10 +191,14 @@ Building our prototype involved various work items which we completed as follows
 \end{enumerate}
 
 \section{Work Split}
-Who did what with respect to the above list of tasks?
+
+Using Git issue feature we assigned tasks to us and shared the progress with each other. Especially the merge request feature helped a lot in keeping a stable version. Overall, Philipp worked on the Beacon detection and Mehdi focused on the Android App. Testing was done by both.
+
 
 \section{Concluding Remarks}
-Your concluding remarks!
+During the last months, we were able to develop a working prototype including our desired feature set. The prototype proves that such a setup is possible, however it outlines some of limitations such as battery consumptions.
+Talking with Ilias during the exercises, visiting the lecture - also the guest lectures-, and working together helped us a lot to get to know new tools and possibilities of the Internet of Things world.
+
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
