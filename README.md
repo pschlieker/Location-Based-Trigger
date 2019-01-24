@@ -1,7 +1,7 @@
 # Distance Based Application Trigger
 ## Repository Overview
 * `/Android` Home of Android Application
-* `RaspberryPi` Home of RaspberryPi application to create Beacon & Rest API
+* `/RaspberryPi` Home of RaspberryPi application to create Beacon & Rest API
 ## Project Description
 ### Main idea
 The main idea of this project is to build an app, that allows to trigger IoT devices based on position / distance. One standard way to do this, e.g. employed by IFTTT, is the use of GPS or the connectivity of WiFi networks 1 . Both of these technologies allow for great radius, but are quite limited in their accuracy. Thus we propose to use Bluetooth Low Energy to estimate the distance. Depending on the progress of the project it might also be feasible to triangulate WiFi signals to further improve the accuracy.
