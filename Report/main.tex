@@ -77,7 +77,8 @@ BCOR5mm, % Binding correction
 
 \section*{Summary} % This section will not appear in the table of contents due to the star (\section*)
 
-Briefly summarize your prototype
+Context-awareness is an important issue in todays IoT world. Our project proposes a trigger that is activated based on the distance to a given object. In our scenario, we make us of the Bluetooth Low Energy (BLE) standard which allows the distance measurement between two objects. We use a BLE beacon together with the Bluetooth sensor of the smartphone in order to measure the distance. 
+
 
 %----------------------------------------------------------------------------------------
 
@@ -88,7 +89,8 @@ Briefly summarize your prototype
 %----------------------------------------------------------------------------------------
 
 \section{Introduction}
-This is how you cite/ add references if relevant. blah\cite{qrygraph}.
+The main idea of this project is to build an Android app that allows to trigger IoT devices based on position / distance thereby adding context-awareness. One standard way to do this, e.g. employed by IFTTT, is the use of GPS or the connectivity of WiFi networks. Both of these technologies allow for great radius but are quite limited in their accuracy. Thus, we propose to use Bluetooth Low Energy to estimate the distance. This is done by using a beacon that continously sends out a broadcast signal using Bluetooth. This signal is then received by a sensor which estimates the distance based on the signal strength. In our scenario we make us of a RaspberryPi as beacon and API. The sensor is then provided by an Android phone.
+
 
 \section{Practical Applicability of the Project}
 Enumerate  \& describe  the practical application scenarios where your prototype would be used/ would be beneficial.
