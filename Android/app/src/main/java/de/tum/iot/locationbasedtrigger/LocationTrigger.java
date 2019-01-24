@@ -58,7 +58,7 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
     public double currentDistance = -1;
 
     //Setting for trigger Frequency
-    private double triggerDistance = 2;//Distance in meters when to trigger
+    private double triggerDistance = .5;//Distance in meters when to trigger
     private long triggerInterval = 10 * 1000; //Interval in milliseconds
 
     //Switch Background Scanning On/Off
@@ -195,6 +195,10 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
             //reduce the time between scans for faster reaction
             beaconManager.setBackgroundBetweenScanPeriod(0);
             beaconManager.setBackgroundScanPeriod(1100);
+            beaconManager.setForegroundScanPeriod(1100);
+            beaconManager.setForegroundBetweenScanPeriod(0);
+
+
             beaconManager.updateScanPeriods();
         } catch (RemoteException e) {  e.printStackTrace(); }
     }
