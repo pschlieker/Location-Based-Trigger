@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <android.support.v7.preference.SwitchPreferenceCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:defaultValue="true"
+        android:key="example_switch"
+        android:summary="on or off"
+        android:title="Settings option" />
+
+    <EditTextPreference
+        android:key="PREF_EDITTEXT"
+        android:title="EditText title"
+        android:summary="EditText summary"
+        android:dialogTitle="EditText Dialog" />
+
+</PreferenceScreen>
