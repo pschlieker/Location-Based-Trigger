@@ -107,23 +107,24 @@ Enumerate  \& describe  the practical application scenarios where your prototype
 Briefly describe your conceptual approach used in realising your prototype. Include relevant figures. Describe the architecture of your prototype with relevant figures.
 
 \section{Sensors Used}
-List the IoT sensors used 
+We used mainly the Bluetooth sensor of the Android phone. But furthermore the WiFi card both of phone and Raspberry are used. The GPIOs of Rasberry are used.
+
 \begin{itemize}
-\item 
-\item 
+\item Bluetooth sensor of Android phone
 \end{itemize}
 
 
 \section{Problems Faced}
-Enumerate the problems faced and document how you overcame them in order to realize your prototype.
+Android implementation due to unknowness of Android development. We both had zero(!) Android experience.
+
 \begin{enumerate}
 \item 
 	\begin{description}
-	\item[Problem 1] Describe briefly the problem \& its solution
+	\item[Problem 1] Using the Bluetooth library on Android. Solution was to deal with it very long time.
 	\end{description}
 	\item 
 	\begin{description}
-	\item[Problem 2] Describe briefly the problem \& its solution
+	\item[Problem 2] Running Bluetooth scanning in background on Android. Was difficult on our Android 8 application. Adding an persistent Android notification solved that issue.
 	\end{description}
 \end{enumerate}
 
@@ -132,11 +133,31 @@ Enumerate the exact work-items which you have worked on.
 \begin{enumerate}
 \item 
 	\begin{description}
-	\item[Task 1] E.g. We trained a classifier for face detection on the mobile phone.
+	\item[Task 1] Add LocalTunnel for remote Endpoint
 	\end{description}
 	\item 
 	\begin{description}
-	\item[Task 2] ...
+		\item[Task 2] Building API on RaspberryPi
+	\end{description}
+	\item 
+	\begin{description}
+		\item[Task 3] Calling API on Android
+	\end{description}
+	\item 
+	\begin{description}
+		\item[Task 4] Background Bluetooth Scanning on Android even if application is not actively open in foreground
+	\end{description}
+	\item 
+	\begin{description}
+		\item[Task 5] Create Settings Page in Android app
+	\end{description}
+	\item 
+	\begin{description}
+		\item[Task 5] Testing everything. We used the feature branch system of Git: implementing and pushing, the other tests and merges into main branch.
+	\end{description}
+	\item 
+	\begin{description}
+		\item[Task 6] Simulate Beacon on computer if BLE fails due to battery 
 	\end{description}
 \end{enumerate}
 
