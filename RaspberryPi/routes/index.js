@@ -11,19 +11,19 @@ router.get('/', function(req, res, next) {
       res.send("error");
     }
 
-    res.render('index', { status: (String(data).trim() == "1" ? "off" : "on") });
+    res.render('index', { status: (String(data).trim() == "1" ? "on" : "off") });
   });
 });
 
 router.get('/trigger', function(req, res, next) {
   var timeout = (isNaN(req.query.timeout) ? 6000 : parseInt(req.query.timeout));
 
-  gpio.write(0, function(err){
+  gpio.write(1, function(err){
     if(!err){
       res.render('action', { info: 'Trigger activated for '+timeout+'ms!'});
       console.log("Trigger activated!");
       setTimeout(function () {
-        gpio.write(1);
+        gpio.write(0);
         console.log("Trigger deactivated!");
       }, timeout);
     }else{
@@ -34,7 +34,7 @@ router.get('/trigger', function(req, res, next) {
 });
 
 router.get('/on', function(req, res, next) {
-  gpio.write(0, function(err){
+  gpio.write(1, function(err){
     if(!err){
       res.render('action', { info: 'Switching On!'});
       console.log("Switching on!");
@@ -46,7 +46,7 @@ router.get('/on', function(req, res, next) {
 });
 
 router.get('/off', function(req, res, next) {
-  gpio.write(1, function(err){
+  gpio.write(0, function(err){
     if(!err){
       res.render('action', { info: 'Switching off!'});
       console.log("Switching off!");
