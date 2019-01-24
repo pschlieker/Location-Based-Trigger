@@ -114,10 +114,28 @@ This type of project can be used in numerous scenarios. A few of which are the f
 \end{enumerate}
 
 \section{Conceptual Approach \& Architecture}
-Briefly describe your conceptual approach used in realising your prototype. Include relevant figures. Describe the architecture of your prototype with relevant figures.
+
+
+Our project architecture can be seen in figure \ref{fig:projectarchitecturefinal}. 
+
+The used sensor is the Bluetooth sensor of an Android Smartphone. The Bluetooth Low Energy (BLE) Beacon is sending its signal constantly and periodically. The Smartphone (hold by a human) comes closer to the Beacon and detects the beacon. As soon as the beacon is detected by the smartphone (by the human), it sends (the human automatically sends) a HTTP request to our webserver to open the door/ to turn on the light. 
+
+(We simulated the Beacon furthermore by a node.js application on PC. Thus, debugging and testing was faster and possible on every machine.)
+
+The HTTP request arrives on the webserver (a Raspberry Pi). The Rasberry Pi handles the request by activating the lamp or opening a lock via its GPIO.
+
+The Raspberry can be reached over a public IP adress. We used Balena as deployment architecture for the Raspberry Pi. Balena is a IoT cloud deployment platform where Balena images can be downloaded and flashed on the Raspberry. The image auto-pulls the code which the developer pushs on his git repository.
+ 
+ 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.99\textwidth]{Project_Architecture_final1}
+	\caption{Project Architecture}
+	\label{fig:projectarchitecturefinal}
+\end{figure}
 
 \section{Sensors Used}
-We used mainly the Bluetooth sensor of the Android phone. But furthermore the WiFi card both of phone and Raspberry are used. The GPIOs of Rasberry are used.
+We used mainly the Bluetooth sensor of the Android phone. But furthermore the WiFi card both of the smartphone and Raspberry Pi are used. The GPIOs of Rasberry are used.
 
 \begin{itemize}
 \item Bluetooth sensor of Android phone
@@ -167,7 +185,7 @@ Enumerate the exact work-items which you have worked on.
 	\end{description}
 	\item 
 	\begin{description}
-		\item[Task 6] Simulate Beacon on computer if BLE fails due to battery 
+		\item[Task 6] Simulate Beacon on computer if BLE fails due to leck of battery level and debugging and testing on different machines
 	\end{description}
 \end{enumerate}
 

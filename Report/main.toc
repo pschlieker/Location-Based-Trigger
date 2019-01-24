@@ -2,7 +2,7 @@
 \contentsline {section}{\numberline {2}{Practical Applicability of the Project}}{1}{section.2}
 \contentsline {section}{\numberline {3}{Conceptual Approach \& Architecture}}{2}{section.3}
 \contentsline {section}{\numberline {4}{Sensors Used}}{2}{section.4}
-\contentsline {section}{\numberline {5}{Problems Faced}}{2}{section.5}
-\contentsline {section}{\numberline {6}{Work Items}}{2}{section.6}
-\contentsline {section}{\numberline {7}{Work Split}}{2}{section.7}
-\contentsline {section}{\numberline {8}{Concluding Remarks}}{2}{section.8}
+\contentsline {section}{\numberline {5}{Problems Faced}}{3}{section.5}
+\contentsline {section}{\numberline {6}{Work Items}}{3}{section.6}
+\contentsline {section}{\numberline {7}{Work Split}}{3}{section.7}
+\contentsline {section}{\numberline {8}{Concluding Remarks}}{3}{section.8}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2018.12.8)  24 JAN 2019 14:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2018.12.8)  24 JAN 2019 16:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1626,30 +1626,33 @@ LaTeX Font Info:    Font shape `T1/iwona/bx/sc' in size <10> not available
 [1
 
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./main.bbl [2])
-[3]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 184.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 184.
- (./main.aux
-
-Package mparhack Warning: Marginpars may have changed.
-(mparhack)                Rerun to get them right.
-
-)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 184.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 184.
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+<Project_Architecture_final1.pdf, id=87, 690.66026pt x 527.08919pt>
+File: Project_Architecture_final1.pdf Graphic file (type pdf)
+<use Project_Architecture_final1.pdf>
+Package pdftex.def Info: Project_Architecture_final1.pdf  used on input line 12
+4.
+(pdftex.def)             Requested size: 366.30203pt x 279.54897pt.
+LaTeX Font Info:    Font shape `T1/iwona/bx/n' in size <9> not available
+(Font)              Font shape `T1/iwona/b/n' tried instead on input line 125.
+ [2 <./Project_Architecture_final1.pdf>] (./main.bbl) [3]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 202.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 202.
+ (./main.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 202.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 202.
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 3E3342317531A4949F405ED1B460DC90;447.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 184.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 202.
  ) 
 Here is how much of TeX's memory you used:
- 39041 strings out of 492641
- 770918 string characters out of 6131787
- 1094422 words of memory out of 5000000
- 42289 multiletter control sequences out of 15000+600000
- 626959 words of font info for 147 fonts, out of 8000000 for 9000
+ 38983 strings out of 492641
+ 769838 string characters out of 6131787
+ 1093422 words of memory out of 5000000
+ 42243 multiletter control sequences out of 15000+600000
+ 625439 words of font info for 134 fonts, out of 8000000 for 9000
  1143 hyphenation exceptions out of 8191
- 66i,22n,91p,9083b,660s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 66i,22n,88p,9083b,660s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/share/texliv
 e/texmf-dist/fonts/enc/dvips/iwona/ec-iwona.enc}{/usr/share/texlive/texmf-dist/
 fonts/enc/dvips/iwona/ec-iwona-sc.enc}</usr/share/texlive/texmf-dist/fonts/type
@@ -1659,10 +1662,10 @@ ic/fpl/fplrc8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/fpl/fplrij
 r/share/texlive/texmf-dist/fonts/type1/nowacki/iwona/iwonar.pfb></usr/share/tex
 live/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/texmf-d
 ist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on main.pdf (3 pages, 98784 bytes).
+Output written on main.pdf (3 pages, 241106 bytes).
 PDF statistics:
- 144 PDF objects out of 1000 (max. 8388607)
- 112 compressed objects within 2 object streams
- 24 named destinations out of 1000 (max. 500000)
- 35001 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 201 PDF objects out of 1000 (max. 8388607)
+ 147 compressed objects within 2 object streams
+ 25 named destinations out of 1000 (max. 500000)
+ 28350 words of extra memory for PDF output out of 29859 (max. 10000000)
 
