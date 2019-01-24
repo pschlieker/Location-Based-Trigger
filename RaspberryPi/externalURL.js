@@ -1,7 +1,11 @@
 var localtunnel = require('localtunnel');
+var config = require('config');
+
+var opts = (config.has("url") ? {subdomain: config.get("url")} : {});
+var port = (config.has("port") ? config.get("port") : 3000);
 
 exports.createTunnel = function () {
-    var tunnel = localtunnel(3000,function(err, tunnel) {
+    var tunnel = localtunnel(port, opts, function(err, tunnel) {
         if (err) {
             console.error(err);
             process.exit(1);
