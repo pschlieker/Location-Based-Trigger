@@ -8,3 +8,13 @@ Report/main\.bbl
 Report/main\.blg
 
 Report/main\.log
+
+*.bbl
+
+*.blg
+
+*.log
+
+*.gz
+
+*.toc
