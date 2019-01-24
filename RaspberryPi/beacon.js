@@ -5,9 +5,7 @@ var instanceId = '3dfe4b5e89b9';
 
 var options = {
     name: 'DoorPi', // set device name when advertising (Linux only)
-    txPowerLevel: -22, // override TX Power Level, default value is -21,
-//    tlmCount: 2, // 2 TLM frames
-//    tlmPeriod: 10 // every 10 advertisements
+    txPowerLevel: -51, // override TX Power Level, default value is -21,, 51 is for RaspPi Zero W
 };
 
 exports.startBeacon = function () {
