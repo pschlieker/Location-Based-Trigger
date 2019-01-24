@@ -118,13 +118,13 @@ This type of project can be used in numerous scenarios. A few of which are the f
 
 Our project architecture can be seen in figure \ref{fig:projectarchitecturefinal}. 
 
-The used sensor is the Bluetooth sensor of an Android Smartphone. The Bluetooth Low Energy (BLE) Beacon is sending its signal constantly and periodically. The Smartphone (hold by a human) comes closer to the Beacon and detects the beacon. As soon as the beacon is detected by the smartphone (by the human), it sends (the human automatically sends) a HTTP request to our webserver to open the door/ to turn on the light. 
+The used sensor is the Bluetooth sensor of an Android Smartphone. The Bluetooth Low Energy (BLE) Beacon is sending its signal constantly and periodically. The Smartphone (hold by a human) comes closer to the Beacon and detects the beacon. As soon as the beacon is detected by the smartphone (by the human), it sends (the human automatically sends) a HTTP request to our webserver to open the door/ to turn on the light.\\
 
-(We simulated the Beacon furthermore by a node.js application on PC. Thus, debugging and testing was faster and possible on every machine.)
+We simulated the Beacon furthermore by a node.js application on PC. Thus, debugging and testing was faster and possible on every machine.\\
 
-The HTTP request arrives on the webserver (a Raspberry Pi). The Rasberry Pi handles the request by activating the lamp or opening a lock via its GPIO.
+The HTTP request arrives on the webserver (a Raspberry Pi). The Rasberry Pi handles the request by activating the lamp or opening a lock via its GPIO.\\
 
-The Raspberry can be reached over a public IP adress. We used Balena as deployment architecture for the Raspberry Pi. Balena is a IoT cloud deployment platform where Balena images can be downloaded and flashed on the Raspberry. The image auto-pulls the code which the developer pushs on his git repository.
+The Raspberry can be reached over a public IP adress. We used Balena as deployment architecture for the Raspberry Pi. Balena \cite{balena} is a IoT cloud deployment platform where Balena images can be downloaded and flashed on the Raspberry. The image auto-pulls the code which the developer pushs on his git repository. On Balena, the Raspberry Pi gets a public IP adress. We installed Localtunnel \cite{localtunnel} on the Raspberry Pi to resolve the IP adress to a DNS name and have a nicer server name.
  
  
 \begin{figure}[h]
@@ -135,57 +135,61 @@ The Raspberry can be reached over a public IP adress. We used Balena as deployme
 \end{figure}
 
 \section{Sensors Used}
-We used mainly the Bluetooth sensor of the Android phone. But furthermore the WiFi card both of the smartphone and Raspberry Pi are used. The GPIOs of Rasberry are used.
-
-\begin{itemize}
-\item Bluetooth sensor of Android phone
-\end{itemize}
+We used mainly the Bluetooth sensor of the Android phone in order to detect the BLE beacon. Furthermore the WiFi card of the phone and Raspberry Pi were to used for communication. The GPIOs of the RaspberryPi are used for the action itself.
 
 
 \section{Problems Faced}
-Android implementation due to unknowness of Android development. We both had zero(!) Android experience.
+During the project we faced various issues. Most of these were due to a lack of experience especially in terms of Android, since we both had almost zero Android experience.
 
 \begin{enumerate}
 \item 
 	\begin{description}
-	\item[Problem 1] Using the Bluetooth library on Android. Solution was to deal with it very long time.
+	\item[Use of BLE Android Library] The first challenge was to find an adequate Bluetooth Library for Android, which supports the Eddystone Beacon simulated by the RaspberryPi, as well as the iBeacon provided by the chair. Once the library was selected it took quite a long time to get it working. One of the issues here were the missing errors when required Android permissions were not set. 
 	\end{description}
 	\item 
 	\begin{description}
-	\item[Problem 2] Running Bluetooth scanning in background on Android. Was difficult on our Android 8 application. Adding an persistent Android notification solved that issue.
+	\item[Background Detection on Android 8+] Prior to Android 8 it was possible to keep a service running in the background in order to detect beacons when the application is in the background. Starting with Android 8 this is not possible any more \cite{young_2017} since services are limited to running only once every 15 minutes. As a solution a new API is provided which wakes up a given application once a defined beacon is in range. Unfortunately this did not work for us, thus we were forced to keep our application permantly active by creating a persistent notification.
 	\end{description}
 \end{enumerate}
 
 \section{Work Items}
-Enumerate the exact work-items which you have worked on. 
+Building our prototype involved various work items which we completed as follows:
 \begin{enumerate}
 \item 
 	\begin{description}
-	\item[Task 1] Add LocalTunnel for remote Endpoint
+	\item[Creating BLE Beacon] Creating a NodeJS application which serves as a BLE beacon both on the laptop and the RaspberryPi.
+	\end{description}
+\item 
+	\begin{description}
+	\item[Deployment to RaspberryPi] In order to have an easy way to deploy new versions of our application we decided to use Balena. Balena allows to run docker images on a RaspberryPi and manages the deployment.
 	\end{description}
 	\item 
 	\begin{description}
-		\item[Task 2] Building API on RaspberryPi
+		\item[Finding BLE Library for Android] Finding a BLE Library for Android which supports both the Eddystone beacon (RaspberryPi) and the iBeacon by the university.
 	\end{description}
 	\item 
 	\begin{description}
-		\item[Task 3] Calling API on Android
+		\item[Foreground Detection] Enabling the Android Application to find the beacon and then estimating the distance while being in the foreground.
 	\end{description}
 	\item 
 	\begin{description}
-		\item[Task 4] Background Bluetooth Scanning on Android even if application is not actively open in foreground
+		\item[Background Dectection] Enabling the Android Application to find the beacon while being in the background. In order to do this we needed to create an additional Application class which can permantly run.
 	\end{description}
 	\item 
-	\begin{description}
-		\item[Task 5] Create Settings Page in Android app
+		\begin{description}
+		\item[RaspberyPi API] Creating an API on the RaspberryPi which interacts with the GPIOs.
 	\end{description}
 	\item 
-	\begin{description}
-		\item[Task 5] Testing everything. We used the feature branch system of Git: implementing and pushing, the other tests and merges into main branch.
+		\begin{description}
+		\item[Making API Requests with Android] Adding the API Request on the Android phone once the phone is near enough.
 	\end{description}
-	\item 
+		\item 
+		\begin{description}
+		\item[Publishing RaspberryPi API] In order to be indepent of the network setup the RaspberryPi publishes the API using a URL with localtunnel.me. Thus independently of a local network connection the API can be reached over the Internet.
+	\end{description}
+	\item
 	\begin{description}
-		\item[Task 6] Simulate Beacon on computer if BLE fails due to leck of battery level and debugging and testing on different machines
+		\item[Testing] We used the feature branch system of Git: implementing and pushing, the other tests and merges into main branch.
 	\end{description}
 \end{enumerate}
 

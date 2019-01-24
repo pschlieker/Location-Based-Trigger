@@ -2,3 +2,9 @@
 *.aux
 
 Report/main\.synctex\.gz
+
+Report/main\.bbl
+
+Report/main\.blg
+
+Report/main\.log
