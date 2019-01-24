@@ -58,7 +58,7 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
     public double currentDistance = -1;
 
     //Setting for trigger Frequency
-    private double triggerDistance = .4;//Distance in meters when to trigger
+    private double triggerDistance = 2;//Distance in meters when to trigger
     private long triggerInterval = 10 * 1000; //Interval in milliseconds
 
     //Switch Background Scanning On/Off
@@ -68,6 +68,9 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
     //Queue for Executing API Calls
     private RequestQueue queue;
     public static String url = "https://iotlocationtrigger.localtunnel.me";
+
+    //Keeping track of status of the API
+    private boolean isOnAPI;
 
 
     @Override
@@ -91,7 +94,7 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
         region = getRaspiRegion();
 
         //Enable Debugging of BeaconManager
-        beaconManager.setDebug(true);
+        beaconManager.setDebug(false);
 
         //Enable PowerSaver
         backgroundPowerSaver = new BackgroundPowerSaver(this);
@@ -101,6 +104,9 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
 
         //Setup Request Queue to be used for API calls
         queue = Volley.newRequestQueue(this);
+
+        //Set Current status of API
+        isOnAPI = false;
 
         Log.i(TAG, "App started up");
     }
@@ -188,7 +194,7 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
 
             //reduce the time between scans for faster reaction
             beaconManager.setBackgroundBetweenScanPeriod(0);
-            beaconManager.setBackgroundScanPeriod(1100);
+            beaconManager.setBackgroundScanPeriod(500);
             beaconManager.updateScanPeriods();
         } catch (RemoteException e) {  e.printStackTrace(); }
     }
@@ -346,15 +352,24 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
             Log.i(TAG, "The first beacon " + b.toString() + " is about " + b.getDistance() + " meters away.");
             currentDistance = b.getDistance();
 
-            if(b.getDistance() < triggerDistance &&
-                    lastNotificationTime + triggerInterval <= System.currentTimeMillis()){
+            if(b.getDistance() < triggerDistance && !isOnAPI){
                 lastNotificationTime = System.currentTimeMillis();
-                makeAPICall("/trigger");
+                makeAPICall("/on");
                 publishNotification("Trigger",
-                        "trigger was activated at "+dateFormat.format(new Date(lastNotificationTime))+
+                        "switched on at "+dateFormat.format(new Date(lastNotificationTime))+
                                 " at "+String.format("%.2f", b.getDistance())+"m");
-                Log.i(TAG, "trigger was activated at "+dateFormat.format(new Date(lastNotificationTime))+
+                Log.i(TAG, "switched on at "+dateFormat.format(new Date(lastNotificationTime))+
                         " at "+String.format("%.2f", b.getDistance())+"m");
+                isOnAPI = true;
+            }else if(b.getDistance() > triggerDistance && isOnAPI){
+                lastNotificationTime = System.currentTimeMillis();
+                makeAPICall("/off");
+                publishNotification("Trigger",
+                        "switched off at "+dateFormat.format(new Date(lastNotificationTime))+
+                                " at "+String.format("%.2f", b.getDistance())+"m");
+                Log.i(TAG, "switched off activated at "+dateFormat.format(new Date(lastNotificationTime))+
+                        " at "+String.format("%.2f", b.getDistance())+"m");
+                isOnAPI = false;
             }
         }
     }
