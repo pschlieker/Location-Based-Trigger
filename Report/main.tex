@@ -77,7 +77,7 @@ BCOR5mm, % Binding correction
 
 \section*{Summary} % This section will not appear in the table of contents due to the star (\section*)
 
-Context-awareness is an important issue in todays IoT world. Our project proposes a trigger that is activated based on the distance to a given object. In our scenario, we make us of the Bluetooth Low Energy (BLE) standard which allows the distance measurement between two objects. We use a BLE beacon together with the Bluetooth sensor of the smartphone in order to measure the distance. 
+Context awareness is an important issue in today's IoT world. Our project proposes a trigger that is activated based on the distance to a given object. In our scenario, we make use of the Bluetooth Low Energy (BLE) standard which allows the distance measurement between two objects. We use a BLE beacon together with the Bluetooth sensor of the smartphone in order to measure the distance and then trigger an API.
 
 
 %----------------------------------------------------------------------------------------
@@ -89,7 +89,7 @@ Context-awareness is an important issue in todays IoT world. Our project propose
 %----------------------------------------------------------------------------------------
 
 \section{Introduction}
-The main idea of this project is to build an Android app that allows to trigger IoT devices based on position / distance thereby adding context-awareness. One standard way to do this, e.g. employed by IFTTT, is the use of GPS or the connectivity of WiFi networks. Both of these technologies allow for great radius but are quite limited in their accuracy. Thus, we propose to use Bluetooth Low Energy to estimate the distance. This is done by using a beacon that continously sends out a broadcast signal using Bluetooth. This signal is then received by a sensor which estimates the distance based on the signal strength. In our scenario we make us of a RaspberryPi as beacon and API. The sensor is then provided by an Android phone.
+The main idea of this project is to build an Android app that allows to trigger IoT devices based on position / distance thereby adding context awareness. One standard way to do this, e.g. employed by IFTTT, is the use of GPS or the connectivity of WiFi networks. Both of these technologies allow for great radius but are quite limited in their accuracy. Thus, we propose to use Bluetooth Low Energy to estimate the distance. This is done by using a beacon that continuously sends out a broadcast signal using Bluetooth. This signal is then received by a sensor which estimates the distance based on the signal strength. In our scenario we make use of a Raspberry Pi as beacon and API. The sensor is then provided by an Android phone.
 
 
 \section{Practical Applicability of the Project}
@@ -97,31 +97,31 @@ This type of project can be used in numerous scenarios. A few of which are the f
 \begin{enumerate}
 \item 
 	\begin{description}
-	\item[Automatically Unlocking a door] Our prototype can be used to automatically unlock the front door of a house once the inhabitant arrives and thereby replacing the normal key. In contrast to WIFI the accuracy of BLE is high enough to \emph{only} keep the door unlocked while standing right next to it.
+	\item[Automatically Unlocking a door] Our prototype can be used to automatically unlock the front door of a house once the inhabitant arrives, and thereby replacing the normal key. In contrast to WIFI, the accuracy of BLE is high enough to \emph{only} keep the door unlocked while standing right next to it.
 	\end{description}
 	\item 
 	\begin{description}
-	\item[Switching Appliances] Another use case would be switching on and off appliances based on ones position in the room. One example would be a desk lamp which is switched on once the user is sitting at a desk and it is dark outside.
+	\item[Switching Appliances] Another use case would be switching on and off appliances based on one's position in the room. One example would be a desk lamp which is switched on once the user is sitting at a desk and it is dark outside.
 	\end{description}
 	\item
 	\begin{description}
-	\item[Sensor for SmartHome Applications] Another use case is the use as a sensor for SmartHome Applications and thereby adding a wide range of possibilities. It is for example possible to switch on the light, adjust the room temperature and turn on music once a person enters a specific room.
+	\item[Sensor for SmartHome Applications] Another use case is the use as a sensor for SmartHome Applications and thereby adding a wide range of possibilities. It is for example possible to switch on the light, adjust the room temperature, and turn on music once a person enters a specific room.
 	\end{description}
 	\item
 	\begin{description}
-	\item[Preventing misuse of devices] Another option would be to prevent the misuse of devices by only allowing the invocation of a command when the person is in a specific location. This could be used by AirBnB to prevent guests from unlocking the front door when they are not there or by companies to enforce security policies.
+	\item[Preventing misuse of devices] Another option would be to prevent the misuse of devices. This can be done by only allowing the invocation of a command when the person is in a specific location. This could be used by AirBnB to prevent guests from unlocking the front door when they are not there or by companies to enforce security policies.
 	\end{description}
 \end{enumerate}
 
 \section{Conceptual Approach \& Architecture}
 
-\noindent The used sensor is the Bluetooth sensor of an Android Smartphone. The Bluetooth Low Energy (BLE) Beacon is sending its signal constantly and periodically. The Smartphone (hold by a human) comes closer to the Beacon and detects the beacon. As soon as the beacon is detected by the smartphone (by the human), it sends (the human automatically sends) a HTTP request to our webserver to open the door/ to turn on the light. Our project architecture can be seen in figure \ref{fig:projectarchitecturefinal}.\\
+\noindent The used sensor is the Bluetooth sensor of an Android Smartphone. The Bluetooth Low Energy (BLE) Beacon is sending its signal constantly and periodically. The Smartphone (held by a human) comes closer to the Beacon and detects the beacon. As soon as the beacon is detected by the smartphone (by the human), it sends (the human automatically sends) a HTTP request to our web server to open the door or to turn on the light. Our project architecture can be seen in figure \ref{fig:projectarchitecturefinal}.\\
 
-\noindent We simulated the Beacon furthermore by a node.js application on PC. Thus, debugging and testing was faster and possible on every machine.\\
+\noindent We simulated the Beacon furthermore by a NodeJS application on PC. Thus, debugging and testing was faster and possible on every machine.\\
 
-\noindent The HTTP request arrives on the webserver (a Raspberry Pi). The Rasberry Pi handles the request by activating the lamp or opening a lock via its GPIO.\\
+\noindent The HTTP request arrives on the web server (a Raspberry Pi). The Raspberry Pi handles the request by activating the lamp or opening a lock via its GPIO.\\
 
-\noindent The Raspberry can be reached over a public IP adress. We used Balena as deployment architecture for the Raspberry Pi. Balena \cite{balena} is a IoT cloud deployment platform where Balena images can be downloaded and flashed on the Raspberry. The image auto-pulls the code which the developer pushs on his git repository. On Balena, the Raspberry Pi gets a public IP adress. We installed Localtunnel \cite{localtunnel} on the Raspberry Pi to resolve the IP adress to a DNS name and have a nicer server name. There is no need of port forwarding.
+\noindent The Raspberry Pi can be reached over a public IP address. We used Balena as deployment architecture for the Raspberry Pi. Balena \cite{balena} is a IoT cloud deployment platform where Balena images can be downloaded and flashed on the Raspberry Pi. The image auto-pulls the code which the developer pushes on his git repository. On Balena, the Raspberry Pi gets a public IP address. We installed Localtunnel \cite{localtunnel} on the Raspberry Pi to resolve the IP address to a DNS name and have a nicer server name. There is no need of port forwarding.
  
  
 \begin{figure}[h]
@@ -132,20 +132,20 @@ This type of project can be used in numerous scenarios. A few of which are the f
 \end{figure}
 
 \section{Sensors Used}
-We used mainly the Bluetooth sensor of the Android phone in order to detect the BLE beacon. Furthermore the WiFi card of the phone and Raspberry Pi were to used for communication. The GPIOs of the RaspberryPi are used for the action itself.
+We mainly used the Bluetooth sensor of the Android smartphone in order to detect the BLE beacon. Furthermore the WiFi card of the phone and Raspberry Pi were used for communication. The GPIOs of the Raspberry Pi are used for the action itself.
 
 
 \section{Problems Faced}
-During the project we faced various issues. Most of these were due to a lack of experience especially in terms of Android, since we both had almost zero Android experience.
+During the project, we faced various issues. Most of these were due to a lack of experience, especially in terms of Android, since we both had almost zero Android experience.
 
 \begin{enumerate}
 \item 
 	\begin{description}
-	\item[Use of BLE Android Library] The first challenge was to find an adequate Bluetooth Library for Android, which supports the Eddystone Beacon simulated by the RaspberryPi, as well as the iBeacon provided by the chair. Once the library was selected it took quite a long time to get it working. One of the issues here were the missing errors when required Android permissions were not set. 
+	\item[Use of BLE Android Library] The first challenge was to find an adequate Bluetooth Library for Android, which supports the Eddystone Beacon simulated by the Raspberry Pi, as well as the iBeacon provided by the chair. Once the library was selected, it took quite a long time to get it working. One of the issues here were the missing errors when required Android permissions were not set. 
 	\end{description}
 	\item 
 	\begin{description}
-	\item[Background Detection on Android 8+] Prior to Android 8 it was possible to keep a service running in the background in order to detect beacons when the application is in the background. Starting with Android 8 this is not possible any more \cite{young_2017} since services are limited to running only once every 15 minutes. As a solution a new API is provided which wakes up a given application once a defined beacon is in range. Unfortunately this did not work for us, thus we were forced to keep our application permantly active by creating a persistent notification.
+	\item[Background Detection on Android 8+] Prior to Android 8 it was possible to keep a service running in the background in order to detect beacons when the application is in the background. Starting with Android 8, this is not possible any more \cite{young_2017} since services are limited to run only once every 15 minutes. As a solution, a new API is provided which wakes up a given application once a defined beacon is in range. Unfortunately, this did not work for us, thus, we were forced to keep our application permanently active by creating a persistent notification.
 	\end{description}
 \end{enumerate}
 
@@ -154,35 +154,35 @@ Building our prototype involved various work items which we completed as follows
 \begin{enumerate}
 \item 
 	\begin{description}
-	\item[Creating BLE Beacon] Creating a NodeJS application which serves as a BLE beacon both on the laptop and the RaspberryPi.
+	\item[Creating BLE Beacon] Creating a NodeJS application which serves as a BLE beacon both on the laptop and the Raspberry Pi.
 	\end{description}
 \item 
 	\begin{description}
-	\item[Deployment to RaspberryPi] In order to have an easy way to deploy new versions of our application we decided to use Balena. Balena allows to run docker images on a RaspberryPi and manages the deployment.
+	\item[Deployment to Raspberry Pi] In order to have an easy way to deploy new versions of our application, we decided to use Balena. Balena allows to run Docker images on a Raspberry Pi and manages the deployment.
 	\end{description}
 	\item 
 	\begin{description}
-		\item[Finding BLE Library for Android] Finding a BLE Library for Android which supports both the Eddystone beacon (RaspberryPi) and the iBeacon by the university.
+		\item[Finding BLE Library for Android] Finding a BLE Library for Android which supports both the Eddystone beacon (Raspberry Pi) and the iBeacon by the university.
 	\end{description}
 	\item 
 	\begin{description}
-		\item[Foreground Detection] Enabling the Android Application to find the beacon and then estimating the distance while being in the foreground.
+		\item[Foreground Detection] Enabling the Android application to find the beacon and then estimating the distance while being in the foreground.
 	\end{description}
 	\item 
 	\begin{description}
-		\item[Background Dectection] Enabling the Android Application to find the beacon while being in the background. In order to do this we needed to create an additional Application class which can permantly run.
+		\item[Background Dectection] Enabling the Android Application to find the beacon while being in the background. In order to do this, we needed to create an additional Application class which can permanently run.
 	\end{description}
 	\item 
 		\begin{description}
-		\item[RaspberyPi API] Creating an API on the RaspberryPi which interacts with the GPIOs.
+		\item[RaspberyPi API] Creating an API on the Raspberry Pi which interacts with the GPIOs.
 	\end{description}
 	\item 
 		\begin{description}
-		\item[Making API Requests with Android] Adding the API Request on the Android phone once the phone is near enough.
+		\item[Making API Requests with Android] Adding the API Request on the Android phone once the smartphone is near enough.
 	\end{description}
 		\item 
 		\begin{description}
-		\item[Publishing RaspberryPi API] In order to be indepent of the network setup the RaspberryPi publishes the API using a URL with localtunnel.me. Thus independently of a local network connection the API can be reached over the Internet.
+		\item[Publishing Raspberry Pi API] In order to be independent of the network setup, the Raspberry Pi publishes the API using a URL with localtunnel.me. Thus, independently of a local network connection, the API can be reached over the Internet.
 	\end{description}
 	\item
 	\begin{description}
@@ -192,12 +192,12 @@ Building our prototype involved various work items which we completed as follows
 
 \section{Work Split}
 
-Using Git issue feature we assigned tasks to us and shared the progress with each other. Especially the merge request feature helped a lot in keeping a stable version. Overall, Philipp worked on the Beacon detection and Mehdi focused on the Android App. Testing was done by both.
+Using Git issue feature, we assigned tasks to us and shared the progress with each other. Especially, the merge request feature helped a lot in keeping a stable version. Overall, Philipp worked on the Beacon detection and Mehdi focused on the rest of the Android App. Testing was done by both.
 
 
 \section{Concluding Remarks}
-During the last months, we were able to develop a working prototype including our desired feature set. The prototype proves that such a setup is possible, however it outlines some of limitations such as battery consumptions.
-Talking with Ilias during the exercises, visiting the lecture - also the guest lectures-, and working together helped us a lot to get to know new tools and possibilities of the Internet of Things world.
+During the last months, we were able to develop a working prototype including our desired feature set. The prototype proves that such a setup is possible, however it outlines some limitations such as battery consumption. This could be for example further improved by only scanning for beacons when the person is in a certain geofence.\\
+All in all, this has helped us to extend our knowledge gained from the lecture. We are looking forward to further work on our prototype and to get it working in reality.
 
 
 %----------------------------------------------------------------------------------------
