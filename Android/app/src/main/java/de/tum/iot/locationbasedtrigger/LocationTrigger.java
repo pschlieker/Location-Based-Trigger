@@ -194,7 +194,7 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
 
             //reduce the time between scans for faster reaction
             beaconManager.setBackgroundBetweenScanPeriod(0);
-            beaconManager.setBackgroundScanPeriod(500);
+            beaconManager.setBackgroundScanPeriod(1100);
             beaconManager.updateScanPeriods();
         } catch (RemoteException e) {  e.printStackTrace(); }
     }
