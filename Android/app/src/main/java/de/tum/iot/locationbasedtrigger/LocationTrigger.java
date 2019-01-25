@@ -208,6 +208,7 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
      * the time between scans to save power and resources
      */
     public void stopRanging(){
+        sendCloseRequest(-1);
         Log.i(TAG, "Stopped Ranging");
 
         try {
@@ -358,23 +359,36 @@ public class LocationTrigger extends Application implements BootstrapNotifier, B
 
             if(b.getDistance() < triggerDistance && !isOnAPI){
                 lastNotificationTime = System.currentTimeMillis();
-                makeAPICall("/on");
-                publishNotification("Trigger",
-                        "switched on at "+dateFormat.format(new Date(lastNotificationTime))+
-                                " at "+String.format("%.2f", b.getDistance())+"m");
-                Log.i(TAG, "switched on at "+dateFormat.format(new Date(lastNotificationTime))+
-                        " at "+String.format("%.2f", b.getDistance())+"m");
-                isOnAPI = true;
+                sendOpenRequest(b.getDistance());
             }else if(b.getDistance() > triggerDistance && isOnAPI){
                 lastNotificationTime = System.currentTimeMillis();
-                makeAPICall("/off");
-                publishNotification("Trigger",
-                        "switched off at "+dateFormat.format(new Date(lastNotificationTime))+
-                                " at "+String.format("%.2f", b.getDistance())+"m");
-                Log.i(TAG, "switched off activated at "+dateFormat.format(new Date(lastNotificationTime))+
-                        " at "+String.format("%.2f", b.getDistance())+"m");
-                isOnAPI = false;
+                sendCloseRequest(b.getDistance());
+
             }
+        }
+    }
+
+    public void sendOpenRequest(double d){
+        if(!isOnAPI){
+            makeAPICall("/on");
+            publishNotification("Trigger",
+                    "switched on at "+dateFormat.format(new Date(lastNotificationTime))+
+                            " at "+String.format("%.2f", d)+"m");
+            Log.i(TAG, "switched on at "+dateFormat.format(new Date(lastNotificationTime))+
+                    " at "+String.format("%.2f", d)+"m");
+            isOnAPI = true;
+        }
+    }
+
+    public void sendCloseRequest(double d){
+        if(isOnAPI){
+            makeAPICall("/off");
+            publishNotification("Trigger",
+                    "switched off at "+dateFormat.format(new Date(lastNotificationTime))+
+                            " at "+String.format("%.2f", d)+"m");
+            Log.i(TAG, "switched off activated at "+dateFormat.format(new Date(lastNotificationTime))+
+                    " at "+String.format("%.2f", d)+"m");
+            isOnAPI = false;
         }
     }
 
